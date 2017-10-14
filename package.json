@@ -1,0 +1,15 @@
+{
+  "name": "tigerhacks",
+  "version": "1.0.0",
+  "description": "lamdba to firebase",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Paul Meyer",
+  "license": "ISC",
+  "dependencies": {
+    "alexa-sdk": "^1.0.14",
+    "firebase": "^4.5.1"
+  }
+}
