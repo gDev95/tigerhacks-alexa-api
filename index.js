@@ -1,5 +1,13 @@
+//var Firebase = require("firebase");
+//import Firebase from './firebase'
 var Firebase = require("firebase")
-
+var config = { /* COPY THE ACTUAL CONFIG FROM FIREBASE CONSOLE */
+      apiKey: 'AIzaSyDeOoXMfCIt2-WXJ6mLp3TcCQxcGK-lp38',
+      authDomain: 'dictate-244d5.firebaseapp.com',
+      databaseURL: 'https://dictate-244d5.firebaseio.com',
+      storageBucket: 'dictate-244d5'
+    }
+var FIRE =  Firebase.initializeApp(config);
 function buildSpeechletResponse(output,repromptText,shouldEndSession){
     return {
         outputSpeech: {
@@ -41,7 +49,7 @@ function getTitleObj(projectTitle){
     }
 }
 
-function createNewProject(db,intent,session,callback){
+function createNewProject(intent,session,callback){
     let projectTitle = intent.slots.Title.value;
     //log intent to blackbox
     console.log(intent);
@@ -57,16 +65,6 @@ function createNewProject(db,intent,session,callback){
     if(projectTitle){
         sessionAttributes = getTitleObj(projectTitle);
         speechOutput = `The name of the project is ${projectTitle}`;
-        db.ref().child("project") // creates a key called hello
-        .set(sessionAttributes)                            // sets the key value to world
-        .then(function (data) {
-          console.log('Firebase data: ', data);        
-          context.succeed();                  // important that you don't call succeed until you are called back otherwise nothing will be saved to the database!
-        })
-        .catch(function (error) {
-            console.log('Firebase error: ', error);
-            context.fail();
-        });
     }
     else
     {
@@ -74,9 +72,24 @@ function createNewProject(db,intent,session,callback){
     }
 
     callback(sessionAttributes, buildSpeechletResponse(speechOutput, repromptText, shouldEndSession));
+
+    
+    console.log('this shit loads here');
+    FIRE.database().ref('projects/1/project').set({
+        active: true,
+        title: projectTitle
+    });
+    callDB();
+}
+function callDB (){
+     FIRE.database().ref('projects').on( 'value', (snapshot) =>{
+        snapshot.forEach((child) => {
+            console.log(child.val().project);
+        })
+    });
 }
 
-function onIntent(db,intentRequest, session, callback){
+function onIntent(intentRequest, session, callback){
     console.log("IntentRequest: ", intentRequest);
     
     const intent = intentRequest.intent;
@@ -85,7 +98,7 @@ function onIntent(db,intentRequest, session, callback){
     console.log("Intent Name is",intentName);
     if(intentName === 'createProject')
     {
-        createNewProject(db,intent,session,callback);
+        createNewProject(intent,session,callback);
     }
     
     
@@ -100,14 +113,14 @@ function onLaunch(launchRequest, session, callback)
 exports.handler = (event, context, callback) => {
     // TODO implement
      // then click "add firebase to your web app"
-     var config = { /* COPY THE ACTUAL CONFIG FROM FIREBASE CONSOLE */
+     /*var config = { 
         apiKey: 'AIzaSyDeOoXMfCIt2-WXJ6mLp3TcCQxcGK-lp38',
         authDomain: 'dictate-244d5.firebaseapp.com',
         databaseURL: 'https://dictate-244d5.firebaseio.com',
         storageBucket: 'dictate-244d5'
       }
     Firebase.initializeApp(config);
-    export const db = firebase.database()
+    const db = Firebase.database();*/
     try{
         if(event.session.new){
             console.log("New Session started");
@@ -119,7 +132,7 @@ exports.handler = (event, context, callback) => {
                 callback(null, buildResponse(sessionAttributes,speechletResponse));
             })
         } else if (event.request.type === 'IntentRequest') {
-            onIntent(db,event.request, event.session,(sessionAttributes, speechletResponse) => {
+            onIntent(event.request, event.session,(sessionAttributes, speechletResponse) => {
                     callback(null, buildResponse(sessionAttributes, speechletResponse));
                 });
         } else if (event.request.type === 'SesionEndedRequest') {
