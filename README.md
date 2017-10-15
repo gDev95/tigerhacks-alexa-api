@@ -13,7 +13,7 @@ Go through the tutorials to gain so more insights how to set up a new skill. The
 We developed following intents (abilities):
 - *open Skill* - in our case we called our skill 'Dictate', simply say 'Alexa, open Dictate' and the skill is launched.
 - *create new project* - simply say create a new project and name your project to start a new project.
-- *add notes* - say 'add a new note' and add the note you want to be added.
+- *add notes* - say 'add a new note' and add the note you want to add.
 - *help* - if you unsure how to use our functions ask Alexa for help!
 
 
