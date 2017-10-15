@@ -2,6 +2,8 @@
 An custom skill for Amazon's Alexa usable with Amazon Echo and Amazon Dot. 
 My Team at Mizzou's TigerHack 2k17 build. We binded it with Google's Firebase Real-Time Database to store information such as notes and projects which ReactJS retrives and renders on the our dev sever.
 
+Credits to Boris Pallares, Alex Andrei, Zhuocheng Shang and Marouen Helali.
+
 # Functionality
 If you want to test this skill clone this repo to your computer.
 
@@ -18,4 +20,4 @@ We developed following intents (abilities):
 
 
 # Contribution
-If you want to help me and my team continue developing this skill further so that future journalists can work paperless and enjoy an comforting virtual companion like Alexa to help them kick of their articles. Everything starts with an idea.
+If you want to help me and my team continue developing this skill further so that future journalists can work paperless and enjoy an comforting virtual companion like Alexa to help them kick of their articles feel free to push changes since there is still a lot to do. Everything starts with an idea.
