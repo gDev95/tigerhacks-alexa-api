@@ -1,6 +1,6 @@
 # tigerhacks-alexa-api 
 An custom skill for Amazon's Alexa usable with Amazon Echo and Amazon Dot. 
-My Team at Mizzou's TigerHack 2k17 build an API binded with Google's Firebase Real-Time Database which ReactJS renders on the our dev sever.
+My Team at Mizzou's TigerHack 2k17 build. We binded it with Google's Firebase Real-Time Database to store information such as notes and projects which ReactJS retrives and renders on the our dev sever.
 
 # Functionality
 If you want to test this skill clone this repo to your computer.
