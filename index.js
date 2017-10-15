@@ -1,3 +1,4 @@
+
 'use strict';
 var Alexa = require('alexa-sdk');
 var firebase = require('firebase');
@@ -15,7 +16,32 @@ var config = { /* COPY THE ACTUAL CONFIG FROM FIREBASE CONSOLE */
   }
 var FIRE =  firebase.initializeApp(config);
 var database = firebase.database();
+var note;
+var noteTitle;
+function addDefaultNotes(){
+  var query = FIRE.database().ref().child("projects").orderByKey().limitToLast(1);
+  console.log(query);
+  query.on("child_added", function(snapshot){
+    var uid = snapshot.key;
+    console.log(snapshot.key);
+    //dictate-244d5/projects/snapshot.key/project/notes.id/body/
+    //https://dictate-244d5.firebaseio.com/projects/-KwU0uJhxJtZEtND63NX/project/notes/0/body
+  
+    FIRE.database().ref('projects/'+ uid +'/project/notes').push().set({
+      edit:false,
+      title: "My First Note",
+      body: "Welcome to Dictate!"
+    });
+}); 
+}
+function escapeWithUid(uid){
 
+  FIRE.database().ref('projects/'+ uid +'/project/notes').push().set({
+    edit:false,
+    title: note,
+    body: noteTitle
+  });
+}
 exports.handler = function(event, context, callback) {
     var alexa = Alexa.handler(event, context);
     alexa.appId = APP_ID;
@@ -27,23 +53,62 @@ var handlers ={
         var greeting = 'Welcome to dictator, create a new project';
         this.emit(':ask', greeting, 'Say, create new project');
       },
+    
+
     'GetNewProject': function(){
      
         var projectTitle = this.event.request.intent.slots.Title.value;     
 
-        FIRE.database().ref('/projects/projects/').push().set({
+        FIRE.database().ref('projects/').push().set({
             project: {
                 active:false,
-                title: projectTitle
+                title: projectTitle,
+                notes: null
             }
           }, () => {
-            this.emit(':tellWithCard', 'Your new project title is '+ projectTitle, SKILL_NAME, 'what should we do next?')      
-        });
-
-      console.log('project title: ' + projectTitle);
+          
+           this.emit(':askWithCard', 'Your new project title is '+ projectTitle, SKILL_NAME, 'Do you wanna add notes to your project?')      
+            
+          });
+          addDefaultNotes();
+       
      // this.emit(':tell', 'Your new project title is '+ projectTitle, 'what should we do next?');
       //contact firebase function;
+    },
+    'AddNewNote': function() {
+        note = this.event.request.intent.slots.Note.value;
+      //  console.log('project title: ' + projectTitle);
+        console.log('note content: ' + note);
+      
+        noteTitle = note.substring(0,8)+"...";
+        console.log('note title: ' + noteTitle);
+
+        var query = FIRE.database().ref().child("projects").orderByKey().limitToLast(1);
+        console.log(query);
+        query.on("child_added", function(snapshot,note,noteTitle){
+          var uid = snapshot.key;
+          escapeWithUid(uid)
+    });
+    this.emit(':ask', "Note has been added", 'add another node as soon as you are ready?')
+} ,
+    'AMAZON.StopIntent': function() {
+      this.emit(':tell', 'I hope you enjoyed the app, have a good day.');
+    },
+    'AMAZON.HelpIntent': function () {
+      
+      var intro = "Dictate lets you help create notes. ";
+      var actions = "Create a project by saying: create Project: Project Name. " +
+      "You can add notes to it by saying: add Note: My Note Content";
+      var message = intro+actions;
+      this.emit(':ask', message, message);
+    },
+    'SessionEndedRequest': function() {
+      var goodbye = 'I hope you enjoyed the app, have a good day!';
+      this.emit(':tell', goodbye)
+    },
+    'Unhandled': function() {
+      var goodbye = "Have a good day!";
+      this.emit(':tell', goodbye);
     }
-};
-    
-    
+};      
+
