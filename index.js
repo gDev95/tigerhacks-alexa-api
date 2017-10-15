@@ -27,20 +27,20 @@ function addDefaultNotes(){
     //dictate-244d5/projects/snapshot.key/project/notes.id/body/
     //https://dictate-244d5.firebaseio.com/projects/-KwU0uJhxJtZEtND63NX/project/notes/0/body
   
-    FIRE.database().ref('projects/'+ uid +'/project/notes').push().set({
+    FIRE.database().ref('projects/'+ uid +'/project/notes').set([{
       edit:false,
       title: "My First Note",
       body: "Welcome to Dictate!"
-    });
+    }]);
 }); 
 }
 function escapeWithUid(uid){
 
-  FIRE.database().ref('projects/'+ uid +'/project/notes').push().set({
+  FIRE.database().ref('projects/'+ uid +'/project/notes').set([{
     edit:false,
-    title: note,
-    body: noteTitle
-  });
+    title: noteTitle,
+    body: note
+  }]);
 }
 exports.handler = function(event, context, callback) {
     var alexa = Alexa.handler(event, context);
@@ -50,7 +50,7 @@ exports.handler = function(event, context, callback) {
 };
 var handlers ={
       'LaunchRequest': function () {
-        var greeting = 'Welcome to dictator, create a new project';
+        var greeting = 'Welcome to dictator, start by saying: create project';
         this.emit(':ask', greeting, 'Say, create new project');
       },
     
@@ -89,7 +89,7 @@ var handlers ={
           var uid = snapshot.key;
           escapeWithUid(uid)
     });
-    this.emit(':ask', "Note has been added", 'add another node as soon as you are ready?')
+    this.emit(':ask', "Note has been added", 'add another node as soon as you are ready.')
 } ,
     'AMAZON.StopIntent': function() {
       this.emit(':tell', 'I hope you enjoyed the app, have a good day.');
