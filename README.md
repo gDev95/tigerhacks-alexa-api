@@ -1,6 +1,9 @@
 # tigerhacks-alexa-api 
-An custom skill for Amazon's Alexa usable with Amazon Echo and Amazon Dot. 
-My Team at Mizzou's TigerHack 2k17 build. We binded it with Google's Firebase Real-Time Database to store information such as notes and projects which ReactJS retrives and renders on the our dev sever.
+A custom skill for Amazon's Alexa usable with Amazon Echo and Amazon Dot. 
+We created this project during TigerHacks 2017 at the University of Missouri - Columbia. 
+Our intention is to help journalist to be able to take notes without writing. Alexa can store all notes they may need to take onto our Firebase server. We render all notes from the server in real-time to a website (currently only in localhost) where notes can be reviewed and deleted. 
+
+The repo for the website can be found here: https://github.com/bpallares/Tigerhacks2017
 
 Credits to Boris Pallares, Alex Andrei, Zhuocheng Shang and Marouen Helali.
 
