@@ -20,10 +20,8 @@ var note;
 var noteTitle;
 function addDefaultNotes(){
   var query = FIRE.database().ref().child("projects").orderByKey().limitToLast(1);
-  console.log(query);
   query.on("child_added", function(snapshot){
     var uid = snapshot.key;
-    console.log(snapshot.key);
     //dictate-244d5/projects/snapshot.key/project/notes.id/body/
     //https://dictate-244d5.firebaseio.com/projects/-KwU0uJhxJtZEtND63NX/project/notes/0/body
   
@@ -78,13 +76,10 @@ var handlers ={
     'AddNewNote': function() {
         note = this.event.request.intent.slots.Note.value;
       //  console.log('project title: ' + projectTitle);
-        console.log('note content: ' + note);
       
         noteTitle = note.substring(0,8)+"...";
-        console.log('note title: ' + noteTitle);
 
         var query = FIRE.database().ref().child("projects").orderByKey().limitToLast(1);
-        console.log(query);
         query.on("child_added", function(snapshot,note,noteTitle){
           var uid = snapshot.key;
           escapeWithUid(uid)
