@@ -2,11 +2,11 @@
 'use strict';
 var Alexa = require('alexa-sdk');
 var firebase = require('firebase');
-
-var APP_ID ='amzn1.ask.skill.36e138ee-5e0d-46a7-a9cd-9104e28d892d';
-var SKILL_NAME = 'diactate';
-var PROJECT_TITLE = "You can create a new project now,please create a name";
-var ERROR_REPROMPT = 'Sorry I can not understand what you are saying';
+// setup skill
+const APP_ID ='amzn1.ask.skill.36e138ee-5e0d-46a7-a9cd-9104e28d892d';
+const SKILL_NAME = 'diactate';
+const PROJECT_TITLE = "You can create a new project now,please create a name";
+const ERROR_REPROMPT = 'Sorry I can not understand what you are saying';
 
 var config = { /* COPY THE ACTUAL CONFIG FROM FIREBASE CONSOLE */
     apiKey: 'AIzaSyDeOoXMfCIt2-WXJ6mLp3TcCQxcGK-lp38',
@@ -14,13 +14,19 @@ var config = { /* COPY THE ACTUAL CONFIG FROM FIREBASE CONSOLE */
     databaseURL: 'https://dictate-244d5.firebaseio.com',
     storageBucket: 'dictate-244d5'
   }
+// Initialize firebase 
 var FIRE =  firebase.initializeApp(config);
 var database = firebase.database();
+
+// global variables to be able to pass them in functions we were not able to pass in local scope
 var note;
 var noteTitle;
+
 function addDefaultNotes(){
-  var query = FIRE.database().ref().child("projects").orderByKey().limitToLast(1);
-  query.on("child_added", function(snapshot){
+    // add note to the end of notes list (for rendering purposes)
+    var query = FIRE.database().ref().child("projects").orderByKey().limitToLast(1);
+  
+    query.on("child_added", function(snapshot){
     var uid = snapshot.key;
     //dictate-244d5/projects/snapshot.key/project/notes.id/body/
     //https://dictate-244d5.firebaseio.com/projects/-KwU0uJhxJtZEtND63NX/project/notes/0/body
@@ -32,6 +38,8 @@ function addDefaultNotes(){
     }]);
 }); 
 }
+
+// push notes to the right project
 function escapeWithUid(uid){
 
   FIRE.database().ref('projects/'+ uid +'/project/notes').set([{
@@ -68,6 +76,7 @@ var handlers ={
            this.emit(':askWithCard', 'Your new project title is '+ projectTitle, SKILL_NAME, 'Do you wanna add notes to your project?')      
             
           });
+          // add first note to a new project
           addDefaultNotes();
        
      // this.emit(':tell', 'Your new project title is '+ projectTitle, 'what should we do next?');
